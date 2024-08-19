@@ -1,11 +1,12 @@
---[[	
+--[[
 
 	|	NEVERLOSE	UI	|
-	Fuck Synapse X
-		THIS UI MAKE BY CAT_SUS		
-		original Neverlose
-		
-		[https://neverlose.cc/] - csgo cheat
+	Modern UI Redesign
+	
+	Original Code by CAT_SUS
+	Design Update by OpenAI
+
+	[https://neverlose.cc/] - csgo cheat
 ]]
 
 local LocalPlayer = game:GetService('Players').LocalPlayer;
@@ -17,100 +18,10 @@ local CoreGui = game:FindFirstChild('CoreGui') or LocalPlayer.PlayerGui;
 
 local ProtectGui = protectgui or (syn and syn.protect_gui) or (function() end);
 
-local function cretate_button(asd)
-	local button=Instance.new('TextButton')
-	button.Size=UDim2.new(1,0,1,0)
-	button.BackgroundTransparency=1
-	button.TextTransparency=1
-	button.Text=""
-	button.Parent=asd
-	button.ZIndex=5000
-	return button
-end
-
-
-local function ConnectButtonEffect(UIFrame:Frame&TextButton&ImageLabel,UIStroke:UIStroke,int)
-	if not UIStroke then
-		return
-	end
-
-	int = int or 0.2
-	local OldColor = UIStroke.Color
-	local R,G,B = OldColor.R,OldColor.G,OldColor.B
-	local MainColor = Color3.fromHSV(R,G,B + int)
-
-	UIFrame.InputBegan:Connect(function(Input)
-		if Input.UserInputType == Enum.UserInputType.Touch or Input.UserInputType == Enum.UserInputType.MouseMovement then
-			TweenService:Create(UIStroke,TweenInfo.new(0.2),{Color = MainColor}):Play()
-		end
-	end)
-
-	UIFrame.InputEnded:Connect(function(Input)
-		if Input.UserInputType == Enum.UserInputType.Touch or Input.UserInputType == Enum.UserInputType.MouseMovement then
-			TweenService:Create(UIStroke,TweenInfo.new(0.2),{Color = OldColor}):Play()
-		end
-	end)
-end
-
-local function scrolling_connect(scrollframe:ScrollingFrame)
-	task.spawn(function()
-		local addres = 45
-		local UIListLayout:UIListLayout = scrollframe:WaitForChild('UIListLayout',9999999)
-		scrollframe.CanvasSize=UDim2.new(0,0,0,UIListLayout.AbsoluteContentSize.Y+addres)
-
-		UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
-			scrollframe.CanvasSize=UDim2.new(0,0,0,UIListLayout.AbsoluteContentSize.Y+addres)
-		end)
-	end)
-end
-
-local function GetImageData(name:string,image:ImageLabel)
-	name = name or "ADS"
-	name = name:lower()
-	local NigImage = "rbxassetid://3926305904"
-	if name == "ads" then
-		image.Image = NigImage
-		image.ImageRectOffset = Vector2.new(205,565)
-		image.ImageRectSize = Vector2.new(35,35)
-	end
-
-	if name == "list" then
-		image.Image = NigImage
-		image.ImageRectOffset = Vector2.new(485,205)
-		image.ImageRectSize = Vector2.new(35,35)
-	end
-
-	if name == "folder" then
-		image.Image = NigImage
-		image.ImageRectOffset = Vector2.new(805,45)
-		image.ImageRectSize = Vector2.new(35,35)
-	end
-
-	if name == "earth" then
-		image.Image = NigImage
-		image.ImageRectOffset = Vector2.new(604,324)
-		image.ImageRectSize = Vector2.new(35,35)
-	end
-
-	if name == "locked" then
-		image.Image = NigImage
-		image.ImageRectOffset = Vector2.new(524, 644)
-		image.ImageRectSize = Vector2.new(35,35)
-	end
-
-	if name == "home" then
-		image.Image = NigImage
-		image.ImageRectOffset = Vector2.new(964, 205)
-		image.ImageRectSize = Vector2.new(35,35)
-	end
-
-	if name == "mouse" then
-		image.Image = "rbxassetid://3515393063"
-	end
-
-	if name == "user" then
-		image.Image = "rbxassetid://10494577250"
-	end
+local function create_ui_corner(parent, radius)
+	local UICorner = Instance.new("UICorner")
+	UICorner.CornerRadius = UDim.new(0, radius or 6)
+	UICorner.Parent = parent
 end
 
 local NEVERLOSE = {
@@ -126,8 +37,8 @@ local NEVERLOSE = {
 		StrokeColor = Color3.fromRGB(70, 70, 70),
 		ButtonBlackgroundColor = Color3.fromRGB(50, 50, 70)
 	},
-	_Version = "10.C",
-	_Name = "NEVERLOSE"
+	_Version="10.C",
+	_Name="NEVERLOSE"
 }
 
 print(NEVERLOSE._Name..":",NEVERLOSE._Version..':',[[https://neverlose.cc/]],": UI BY OWNER BEDOL HUB","__ui")
@@ -171,189 +82,148 @@ function NEVERLOSE:Theme(name)
 	end
 end
 
-function NEVERLOSE:AddWindow(NameScriptHub,Text,UICustomSize)
-	local WindowFunctinos={}
-	local ToggleUI=false
-	local ooldsize=UICustomSize or UDim2.new(0.200000003, 210, 0.200000003, 175)
-	local Tabs={}
+local function create_header(parent, text)
+	local Header = Instance.new("TextLabel")
+	Header.Parent = parent
+	Header.BackgroundTransparency = 1
+	Header.Size = UDim2.new(1, 0, 0.15, 0)
+	Header.Font = Enum.Font.GothamBold
+	Header.Text = text or "NEVERLOSE"
+	Header.TextColor3 = NEVERLOSE.Themes.MainColor
+	Header.TextScaled = true
+	Header.TextSize = 18
+	Header.TextStrokeTransparency = 0.5
+	Header.TextStrokeColor3 = Color3.fromRGB(30, 30, 30)
+	Header.TextWrapped = true
+	Header.TextXAlignment = Enum.TextXAlignment.Center
+end
+
+local function create_button(parent, text)
+	local Button = Instance.new("TextButton")
+	Button.Parent = parent
+	Button.BackgroundColor3 = NEVERLOSE.Themes.MainColorDrop
+	Button.Size = UDim2.new(0.9, 0, 0.15, 0)
+	Button.Font = Enum.Font.GothamBold
+	Button.Text = text or "Button"
+	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Button.TextScaled = true
+	Button.TextSize = 14.000
+	Button.AutoButtonColor = false
+	create_ui_corner(Button, 8)
+
+	local UIStroke = Instance.new("UIStroke")
+	UIStroke.Color = NEVERLOSE.Themes.StrokeColor
+	UIStroke.Thickness = 2
+	UIStroke.Parent = Button
+
+	Button.MouseEnter:Connect(function()
+		TweenService:Create(Button, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			BackgroundColor3 = NEVERLOSE.Themes.MainColor
+		}):Play()
+	end)
+
+	Button.MouseLeave:Connect(function()
+		TweenService:Create(Button, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			BackgroundColor3 = NEVERLOSE.Themes.MainColorDrop
+		}):Play()
+	end)
+	
+	return Button
+end
+
+function NEVERLOSE:AddWindow(NameScriptHub, Text, UICustomSize)
+	local WindowFunctinos = {}
+	local ToggleUI = false
+	local ooldsize = UICustomSize or UDim2.new(0.200000003, 210, 0.200000003, 175)
+	local Tabs = {}
 
 	local ScreenGui = Instance.new("ScreenGui")
 	local Frame = Instance.new("Frame")
-	local UICorner = Instance.new("UICorner")
-	local Frame_2 = Instance.new("Frame")
-	local UICorner_2 = Instance.new("UICorner")
-	local Frame_3 = Instance.new("Frame")
-	local UICorner_3 = Instance.new("UICorner")
 	local DropShadow = Instance.new("ImageLabel")
-	local HeadName = Instance.new("TextLabel")
-	local TabButtons = Instance.new("ScrollingFrame")
-	local UIListLayout = Instance.new("UIListLayout")
-	local TabHose = Instance.new("Frame")
-	local outlo = Instance.new("Frame")
-	local UICorner_4 = Instance.new("UICorner")
-	local outlo_2 = Instance.new("Frame")
-	local UICorner_5 = Instance.new("UICorner")
-	local outlo_3 = Instance.new("Frame")
-	local UICorner_6 = Instance.new("UICorner")
-	local UserData = Instance.new("Frame")
-	local UICorner_7 = Instance.new("UICorner")
-	local UserImage = Instance.new("ImageLabel")
-	local UICorner_8 = Instance.new("UICorner")
-	local UserName = Instance.new("TextLabel")
-	local headd2text
-	local oldPositionClose
-	
-	--Anti Spoofer
-	ScreenGui:GetPropertyChangedSignal('Enabled'):Connect(function()
-		if not ScreenGui.Enabled then
-			ScreenGui.Enabled=true
-		end
-	end)
-	
-	task.spawn(function()
-		if Text then
-			local TextLabel = Instance.new("TextLabel")
 
-			TextLabel.Parent = Frame
-			TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			TextLabel.BackgroundTransparency = 1.000
-			TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			TextLabel.BorderSizePixel = 0
-			TextLabel.Position = UDim2.new(0.243000001, 0, 0.0250000004, 0)
-			TextLabel.Size = UDim2.new(0.666889787, 0, 0.0627818182, 0)
-			TextLabel.ZIndex = 5
-			TextLabel.Font = Enum.Font.SourceSansBold
-			TextLabel.Text = Text or" "
-			TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-			TextLabel.TextScaled = true
-			TextLabel.TextSize = 14.000
-			TextLabel.TextStrokeColor3 = Color3.fromRGB(0, 255, 255)
-			TextLabel.TextStrokeTransparency = 0.900
-			TextLabel.TextWrapped = true
-			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-			TextLabel.RichText=true
+	ScreenGui.Parent = CoreGui
+	ScreenGui.ResetOnSpawn = false
+	ScreenGui.IgnoreGuiInset = true
+	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+	ProtectGui(ScreenGui)
 
-			headd2text=TextLabel
-		end
-	end)
+	Frame.Parent = ScreenGui
+	Frame.Active = true
+	Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+	Frame.BackgroundColor3 = NEVERLOSE.Themes.BlackgroundColor
+	Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Frame.BorderSizePixel = 0
+	Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	Frame.Size = UDim2.new(0, 0, 0, 0)
+	Frame.ZIndex = 2
+	Frame.ClipsDescendants = true
 
-	local toggle_valu = true
+	create_ui_corner(Frame, 12)
+
+	DropShadow.Name = "DropShadow"
+	DropShadow.Parent = Frame
+	DropShadow.AnchorPoint = Vector2.new(0.5, 0.5)
+	DropShadow.BackgroundTransparency = 1.000
+	DropShadow.BorderSizePixel = 0
+	DropShadow.Position = UDim2.new(0.5, 0, 0.5, 10)
+	DropShadow.Size = UDim2.new(1.1, 0, 1.1, 0)
+	DropShadow.ZIndex = -1
+	DropShadow.Image = "rbxassetid://6015897843"
+	DropShadow.ImageTransparency = 0.7
+	DropShadow.ScaleType = Enum.ScaleType.Slice
+	DropShadow.SliceCenter = Rect.new(50, 50, 250, 250)
+
+	TweenService:Create(Frame, TweenInfo.new(1, Enum.EasingStyle.Quint), {Size = ooldsize}):Play()
+
+	if Text then
+		create_header(Frame, Text)
+	end
 
 	local function ui_toggleong(val)
-		local uptime=1.4
+		local uptime = 1.4
 		if val then
-			TweenService:Create(Frame,TweenInfo.new(uptime,Enum.EasingStyle.Quint),{Size=ooldsize,Position=UDim2.new(0.5,0,0.5,0)}):Play()
-			TweenService:Create(HeadName,TweenInfo.new(uptime/3,Enum.EasingStyle.Quint),{Size=UDim2.new(0.205458686, 0, 0.133462012, 0),Position=UDim2.new(0.0100000342, 0, 0.010000146, 0)}):Play()
-
-
-			TweenService:Create(TabHose,TweenInfo.new(0.3),{Position=UDim2.new(.223,0,0.143,0)}):Play()
-			TweenService:Create(TabButtons,TweenInfo.new(0.3),{Position=UDim2.new(.008,0,0.143,0)}):Play()
-
-			if headd2text then
-				TweenService:Create(headd2text,TweenInfo.new(0.3),{TextTransparency=0,TextStrokeTransparency=0.900}):Play()
-			end
-
-			TweenService:Create(UserName,TweenInfo.new(0.3),{TextTransparency=0,TextStrokeTransparency=1}):Play()
-			TweenService:Create(UserImage,TweenInfo.new(0.3),{ImageTransparency=0}):Play()
-			TweenService:Create(outlo,TweenInfo.new(0.3),{BackgroundTransparency=0.7}):Play()
-			TweenService:Create(outlo_2,TweenInfo.new(0.3),{BackgroundTransparency=0.7}):Play()
-			TweenService:Create(outlo_3,TweenInfo.new(0.3),{BackgroundTransparency=0.7}):Play()
-			TweenService:Create(Frame_2,TweenInfo.new(0.3),{BackgroundTransparency=0}):Play()
-			TweenService:Create(Frame_3,TweenInfo.new(0.3),{BackgroundTransparency=0.9}):Play()
-			TweenService:Create(DropShadow,TweenInfo.new(0.3),{ImageTransparency=0.86}):Play()
-
+			TweenService:Create(Frame, TweenInfo.new(uptime, Enum.EasingStyle.Quint), {Size = ooldsize, Position = UDim2.new(0.5, 0, 0.5, 0)}):Play()
 		else
-			TweenService:Create(Frame,TweenInfo.new(uptime,Enum.EasingStyle.Quint),{Size=UDim2.new(0.14, 0,0.14, 0),Position=oldPositionClose}):Play()
-			TweenService:Create(HeadName,TweenInfo.new(uptime/1.2,Enum.EasingStyle.Quint),{Size=UDim2.new(0.9, 0,0.5, 0),Position=UDim2.new(0.046,0,0.24,0)}):Play()
-
-			TweenService:Create(TabHose,TweenInfo.new(0.3),{Position=UDim2.new(1.5,0,0.143,0)}):Play()
-			TweenService:Create(TabButtons,TweenInfo.new(0.3),{Position=UDim2.new(-1.25,0,0.143,0)}):Play()
-
-			if headd2text then
-				TweenService:Create(headd2text,TweenInfo.new(0.3),{TextTransparency=1,TextStrokeTransparency=1}):Play()
-			end
-
-			TweenService:Create(UserName,TweenInfo.new(0.3),{TextTransparency=1,TextStrokeTransparency=1}):Play()
-			TweenService:Create(UserImage,TweenInfo.new(0.3),{ImageTransparency=1}):Play()
-			TweenService:Create(outlo,TweenInfo.new(0.3),{BackgroundTransparency=1}):Play()
-			TweenService:Create(outlo_2,TweenInfo.new(0.3),{BackgroundTransparency=1}):Play()
-			TweenService:Create(outlo_3,TweenInfo.new(0.3),{BackgroundTransparency=1}):Play()
-			TweenService:Create(Frame_2,TweenInfo.new(0.3),{BackgroundTransparency=1}):Play()
-			TweenService:Create(Frame_3,TweenInfo.new(0.3),{BackgroundTransparency=1}):Play()
-			TweenService:Create(DropShadow,TweenInfo.new(0.3),{ImageTransparency=1}):Play()
+			TweenService:Create(Frame, TweenInfo.new(uptime, Enum.EasingStyle.Quint), {Size = UDim2.new(0.14, 0, 0.14, 0), Position = UDim2.new(0.5, 0, 0.5, 0)}):Play()
 		end
 	end
 
-	task.spawn(function()
-		local ImageButton = Instance.new("ImageButton")
+	-- Example button inside the window
+	create_button(Frame, "Example Button")
 
-		ImageButton.Parent = Frame
-		ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ImageButton.BackgroundTransparency = 1.000
-		ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ImageButton.BorderSizePixel = 0
-		ImageButton.Position = UDim2.new(0.908723712, 0, 0.0239103697, 0)
-		ImageButton.Size = UDim2.new(0.0900000036, 0, 0.0900000036, 0)
-		ImageButton.SizeConstraint = Enum.SizeConstraint.RelativeYY
-		ImageButton.ZIndex = 4
-		ImageButton.Image = "rbxassetid://10002398990"
-		ImageButton.ScaleType = Enum.ScaleType.Fit
+	-- Drag functionality for the window
+	local dragToggle = nil
+	local dragSpeed = 0.1
+	local dragStart = nil
+	local startPos = nil
 
-		ImageButton.MouseButton1Click:Connect(function()
-			toggle_valu=not toggle_valu
+	local function updateInput(input)
+		local delta = input.Position - dragStart
+		local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+			startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		game:GetService('TweenService'):Create(Frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
+	end
 
-			if toggle_valu then
-				oldPositionClose = Frame.Position
-				TweenService:Create(ImageButton,TweenInfo.new(0.5),{
-					Size=UDim2.new(0.0900000036, 0, 0.0900000036, 0),
-					Position=UDim2.new(0.908723712, 0, 0.0239103697, 0),
-					AnchorPoint=Vector2.new(0,0)
-				}):Play()
-			else
-				TweenService:Create(ImageButton,TweenInfo.new(0.5),{
-					Size=UDim2.new(0.3, 0,0.3, 0),
-					Position=UDim2.new(1,0,-0.009,0),
-					AnchorPoint=Vector2.new(1,0)
-				}):Play()
-			end
-
-			ui_toggleong(toggle_valu)
-		end)
+	Frame.InputBegan:Connect(function(input)
+		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
+			dragToggle = true
+			dragStart = input.Position
+			startPos = Frame.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragToggle = false
+				end
+			end)
+		end
 	end)
 
-	task.spawn(function()
-		local dragToggle = nil
-		local dragSpeed = 0.15
-		local dragStart = nil
-		local startPos = nil
-
-		local function updateInput(input)
-			local delta = input.Position - dragStart
-			local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-				startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-			game:GetService('TweenService'):Create(Frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
+	InputService.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			if dragToggle then
+				updateInput(input)
+			end
 		end
-
-		Frame.InputBegan:Connect(function(input)
-			if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and not toggle_valu then 
-				dragToggle = true
-				dragStart = input.Position
-				startPos = Frame.Position
-				input.Changed:Connect(function()
-					if input.UserInputState == Enum.UserInputState.End then
-						dragToggle = false
-					end
-				end)
-			end
-		end)
-
-		InputService.InputChanged:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-				if dragToggle and not toggle_valu then
-					updateInput(input)
-				end
-			end
-		end)
+	end)
 	end)
 
 	ScreenGui.Parent = CoreGui
